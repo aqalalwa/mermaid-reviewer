@@ -106,36 +106,23 @@ You can provide your Entra App Registration details in any of three ways:
 
 This project includes pre-configured Azure Static Web Apps files:
 - [`public/staticwebapp.config.json`](public/staticwebapp.config.json) — SPA fallback routing (`/index.html`), MIME types, and security headers (copied into `dist/` on build).
-- [`.github/workflows/azure-static-web-apps.yml`](.github/workflows/azure-static-web-apps.yml) — GitHub Actions CI/CD workflow (supports both `main` branch production deploys and automatic Pull Request preview environments).
+- [`.github/workflows/azure-static-web-apps.yml`](.github/workflows/azure-static-web-apps.yml) — Manual (`workflow_dispatch`) GitHub Actions deployment workflow.
 - [`swa-cli.config.json`](swa-cli.config.json) — Configuration for the Azure Static Web Apps CLI.
 
-### Option A: Connect Your GitHub Repo Directly in the Azure Portal
-1. Push this repository to **GitHub**.
-2. Go to the [Azure Portal — Create Static Web App](https://portal.azure.com/#create/Microsoft.StaticApp).
-3. Choose your **Subscription**, **Resource Group**, **Name** (e.g., `mermaid-diff-tool`), and **Plan type** (`Free` or `Standard`).
-4. Under **Deployment details**:
-   - Select **GitHub** and sign in to your GitHub account.
-   - Select your **Organization**, **Repository**, and **Branch** (`main`).
-   - Under **Build Details**, choose **React** (or **Custom**) with:
-     - **App location**: `/`
-     - **Api location**: *(leave blank)*
-     - **Output location**: `dist`
-5. Click **Review + create** → **Create**.
-
-### Option B: Use the Included GitHub Actions Workflow ([`.github/workflows/azure-static-web-apps.yml`](.github/workflows/azure-static-web-apps.yml))
-If you created the Static Web App with Deployment Source set to **Other** (or want to use the existing workflow file in this repo):
-1. In the Azure Portal, open your Static Web App → click **Manage deployment token** in the top bar → copy the token.
-2. In your GitHub repository, go to **Settings** → **Secrets and variables** → **Actions**:
+### Option A: Manual GitHub Actions Deployment ([`.github/workflows/azure-static-web-apps.yml`](.github/workflows/azure-static-web-apps.yml))
+1. In the [Azure Portal — Create Static Web App](https://portal.azure.com/#create/Microsoft.StaticApp), create your Static Web App with **Deployment details → Other** (so Azure doesn't overwrite your workflow with an auto-push trigger).
+2. Once created, open your Static Web App in the Azure Portal → click **Manage deployment token** in the top bar → copy the token.
+3. In your GitHub repository, go to **Settings** → **Secrets and variables** → **Actions**:
    - Under the **Secrets** tab, click **New repository secret**:
      - Name: `AZURE_STATIC_WEB_APPS_API_TOKEN`
      - Value: paste your deployment token.
    - Under the **Variables** tab *(optional, for Microsoft Entra ID SSO)*, click **New repository variable**:
      - `VITE_ADO_SSO_CLIENT_ID`: your Entra ID Application (client) ID.
      - `VITE_ADO_SSO_TENANT_ID`: your Entra ID Directory (tenant) ID (or `organizations`).
-3. Push to `main`—GitHub Actions will automatically build and deploy the app.
+4. Whenever you want to deploy, go to your GitHub repo's **Actions** tab → select **Deploy to Azure Static Web Apps** → click **Run workflow**.
 
-### Option C: Deploy Directly from Your Terminal (SWA CLI)
-You can also deploy straight from your machine without waiting for CI:
+### Option B: Deploy Directly from Your Terminal (SWA CLI)
+You can also deploy straight from your machine without GitHub Actions:
 ```bash
 npm run swa:deploy -- --deployment-token "<YOUR_STATIC_WEB_APP_DEPLOYMENT_TOKEN>"
 ```
