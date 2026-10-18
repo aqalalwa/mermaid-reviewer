@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mermaid/diff — Mermaid Diff Comparison Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">
+          <span class="brand-mark-a"></span>
+          <span class="brand-mark-b"></span>
+        </div>
+        <span>mermaid<span class="brand-slash">/</span>diff</span>
+      </div>
+
+      <div class="view-tabs" id="view-tabs">
+        <button type="button" class="view-tab active" data-view="split">Split</button>
+        <button type="button" class="view-tab" data-view="overlay">Merged</button>
+        <button type="button" class="view-tab" data-view="source">Source</button>
+      </div>
+
+      <div class="header-spacer"></div>
+
+      <div class="stats-badges">
+        <span class="stat-badge stat-add" id="stat-add">+0 added</span>
+        <span class="stat-badge stat-del" id="stat-del">−0 removed</span>
+        <span class="stat-badge stat-mod" id="stat-mod">~0 changed</span>
+      </div>
+
+      <div class="header-divider"></div>
+
+      <button type="button" class="btn-sync" id="btn-sync" title="Pan and zoom both sides together">
+        <span class="sync-track" id="sync-track">
+          <span class="sync-thumb"></span>
+        </span>
+        Sync view
+      </button>
+
+      <button type="button" class="btn-swap" id="btn-swap" title="Swap Base and Compare">⇄ Swap</button>
+    </header>
+
+    <main class="app-main">
+      <div class="workspace-area">
+        <!-- Split View -->
+        <div class="view-split" id="view-split">
+          <!-- Base (A) -->
+          <section class="split-pane-section">
+            <div class="pane-header">
+              <span class="side-badge side-badge-a">A</span>
+              <span class="side-title">Base</span>
+              <span class="side-filename" id="name-a">checkout-v1.mmd</span>
+              <button type="button" class="btn-edit" id="btn-edit-a">Edit</button>
+              <button type="button" class="btn-open-file" id="btn-open-a">Open file</button>
+              <input type="file" id="file-a" accept=".mmd,.mermaid,.md,.txt" class="hidden">
+            </div>
+            <div class="canvas-pane" id="pane-a">
+              <div class="svg-layer" id="svg-a"></div>
+              <div class="zoom-floating" id="zoom-box-a">
+                <button type="button" class="btn-zoom-icon" id="zoom-out-a">−</button>
+                <span class="zoom-pct" id="pct-a">100%</span>
+                <button type="button" class="btn-zoom-icon" id="zoom-in-a">+</button>
+                <span class="zoom-divider"></span>
+                <button type="button" class="btn-zoom-fit" id="fit-a">Fit</button>
+              </div>
+              <div class="error-banner hidden" id="err-a"></div>
+              <div class="loading-overlay" id="loading-a">Loading renderer…</div>
+              <div class="drop-overlay hidden" id="drop-a">Drop to replace Base</div>
+            </div>
+            <textarea class="code-editor hidden" id="editor-a" spellcheck="false"></textarea>
+          </section>
+
+          <!-- Compare (B) -->
+          <section class="split-pane-section">
+            <div class="pane-header">
+              <span class="side-badge side-badge-b">B</span>
+              <span class="side-title">Compare</span>
+              <span class="side-filename" id="name-b">checkout-v2.mmd</span>
+              <button type="button" class="btn-edit" id="btn-edit-b">Edit</button>
+              <button type="button" class="btn-open-file" id="btn-open-b">Open file</button>
+              <input type="file" id="file-b" accept=".mmd,.mermaid,.md,.txt" class="hidden">
+            </div>
+            <div class="canvas-pane" id="pane-b">
+              <div class="svg-layer" id="svg-b"></div>
+              <div class="zoom-floating" id="zoom-box-b">
+                <button type="button" class="btn-zoom-icon" id="zoom-out-b">−</button>
+                <span class="zoom-pct" id="pct-b">100%</span>
+                <button type="button" class="btn-zoom-icon" id="zoom-in-b">+</button>
+                <span class="zoom-divider"></span>
+                <button type="button" class="btn-zoom-fit" id="fit-b">Fit</button>
+              </div>
+              <div class="error-banner hidden" id="err-b"></div>
+              <div class="loading-overlay" id="loading-b">Loading renderer…</div>
+              <div class="drop-overlay hidden" id="drop-b">Drop to replace Compare</div>
+            </div>
+            <textarea class="code-editor hidden" id="editor-b" spellcheck="false"></textarea>
+          </section>
+        </div>
+
+        <!-- Merged / Overlay View -->
+        <section class="view-overlay" id="view-overlay">
+          <div class="overlay-header">
+            <span class="badge-pair">
+              <span class="badge-pair-a">A</span>
+              <span class="badge-pair-b">B</span>
+            </span>
+            <span class="side-title">Merged</span>
+            <span class="overlay-subtitle">Both versions in one graph. Removed items are dashed.</span>
+            <div class="header-spacer"></div>
+            <button type="button" class="btn-overlay-zoom" id="zoom-out-o">−</button>
+            <span class="overlay-zoom-pct" id="pct-o">100%</span>
+            <button type="button" class="btn-overlay-zoom" id="zoom-in-o">+</button>
+            <button type="button" class="btn-overlay-fit" id="fit-o">Fit</button>
+          </div>
+          <div class="canvas-pane" id="pane-o">
+            <div class="svg-layer" id="svg-o"></div>
+            <div class="error-banner-neutral hidden" id="err-o"></div>
+          </div>
+        </section>
+
+        <!-- Source View -->
+        <section class="view-source" id="view-source">
+          <div class="source-header">
+            <div class="source-col-header">
+              <span class="side-badge side-badge-a">A</span>
+              <span class="side-filename" id="src-name-a">checkout-v1.mmd</span>
+            </div>
+            <div class="source-col-header">
+              <span class="side-badge side-badge-b">B</span>
+              <span class="side-filename" id="src-name-b">checkout-v2.mmd</span>
+            </div>
+          </div>
+          <div class="source-body" id="source-rows"></div>
+        </section>
+      </div>
+
+      <!-- Changes Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="sidebar-title-row">
+            <span class="sidebar-title">Changes</span>
+            <span class="sidebar-total" id="stats-total">0</span>
+          </div>
+          <div class="filter-pills" id="filter-pills"></div>
+        </div>
+
+        <div class="sidebar-list" id="sidebar-list">
+          <div class="not-flow-card hidden" id="not-flow-card">
+            Visual highlighting works on <span class="mono-inline">flowchart</span> / <span class="mono-inline">graph</span> diagrams. For <span class="mono-inline" id="diag-type"></span>, use the Source view to see line changes.
+          </div>
+
+          <div class="identical-msg hidden" id="identical-msg">No structural differences.</div>
+
+          <div id="nodes-section" class="hidden">
+            <div class="section-label">Nodes</div>
+            <div id="node-rows"></div>
+          </div>
+
+          <div id="edges-section" class="hidden">
+            <div class="section-label section-label-edges">Connections</div>
+            <div id="edge-rows"></div>
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="legend-row">
+            <span class="legend-item"><span class="legend-swatch legend-add"></span>Added</span>
+            <span class="legend-item"><span class="legend-swatch legend-del"></span>Removed</span>
+            <span class="legend-item"><span class="legend-swatch legend-mod"></span>Changed</span>
+          </div>
+          <div>Scroll to zoom · drag to pan · drop a .mmd or .md file on a side</div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
