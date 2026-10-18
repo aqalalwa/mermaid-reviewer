@@ -8,11 +8,13 @@
       "/*.ico",
       "/*.css",
       "/*.js",
-      "/*.json"
+      "/*.json",
+      "/*.webmanifest"
     ]
   },
   "mimeTypes": {
     ".json": "application/json",
+    ".webmanifest": "application/manifest+json",
     ".svg": "image/svg+xml",
     ".js": "text/javascript",
     ".mjs": "text/javascript"
