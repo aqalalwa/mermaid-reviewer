@@ -1075,19 +1075,19 @@ export const MermaidDiffApp: React.FC<MermaidDiffProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: 10,
-            fontFamily: "'Geist Mono', monospace",
-            fontWeight: 500,
+            fontFamily: "Geist, -apple-system, BlinkMacSystemFont, sans-serif",
+            fontWeight: 600,
             fontSize: 14,
-            letterSpacing: '-0.01em'
+            letterSpacing: '-0.01em',
+            color: '#191917'
           }}
         >
-          <div style={{ width: 20, height: 20, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <span style={{ background: '#191917', borderRadius: '3px 0 0 3px' }} />
-            <span style={{ background: '#1f8a4c', borderRadius: '0 3px 3px 0' }} />
-          </div>
-          <span>
-            mermaid<span style={{ color: '#a19f96' }}>/</span>diff
-          </span>
+          <img
+            src="/logo.png"
+            alt="Mermaid Reviewer"
+            style={{ width: 22, height: 22, display: 'block', borderRadius: 4 }}
+          />
+          <span>Mermaid Reviewer</span>
         </div>
 
         <div style={{ display: 'flex', gap: 2, padding: 3, background: '#eceae4', borderRadius: 8 }}>

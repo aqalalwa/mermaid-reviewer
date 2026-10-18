@@ -1,7 +1,7 @@
 {
   "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
   "configurations": {
-    "mermaid-diff-tool": {
+    "mermaid-reviewer": {
       "appLocation": ".",
       "outputLocation": "dist",
       "appBuildCommand": "npm run build",
