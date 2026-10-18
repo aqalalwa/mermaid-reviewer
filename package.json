@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "swa:deploy": "npm run build && npx --yes @azure/static-web-apps-cli deploy ./dist --env production"
   },
   "dependencies": {
     "@azure/msal-browser": "^3.28.1",
