@@ -2,12 +2,39 @@ name: Deploy to Azure Static Web Apps
 
 on:
   workflow_dispatch:
+    inputs:
+      deployment_token:
+        description: 'Azure Static Web App Deployment Token (or leave blank to use AZURE_STATIC_WEB_APPS_API_TOKEN secret)'
+        required: false
+        type: string
+      sso_client_id:
+        description: 'Optional: Microsoft Entra ID Application (Client) ID for SSO'
+        required: false
+        type: string
+      sso_tenant_id:
+        description: 'Optional: Microsoft Entra ID Directory (Tenant) ID for SSO (default: organizations)'
+        required: false
+        default: 'organizations'
+        type: string
 
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
+      - name: Mask deployment token input in logs
+        if: ${{ inputs.deployment_token != '' }}
+        run: echo "::add-mask::${{ inputs.deployment_token }}"
+
+      - name: Validate deployment token is provided
+        env:
+          TOKEN: ${{ inputs.deployment_token || secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::error::No deployment token provided. Please enter 'deployment_token' when running the workflow or set the 'AZURE_STATIC_WEB_APPS_API_TOKEN' repository secret."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
         with:
           submodules: true
@@ -17,12 +44,12 @@ jobs:
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          azure_static_web_apps_api_token: ${{ inputs.deployment_token || secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/"
           api_location: ""
           output_location: "dist"
         env:
-          VITE_ADO_SSO_CLIENT_ID: ${{ vars.VITE_ADO_SSO_CLIENT_ID }}
-          VITE_ADO_SSO_TENANT_ID: ${{ vars.VITE_ADO_SSO_TENANT_ID }}
+          VITE_ADO_SSO_CLIENT_ID: ${{ inputs.sso_client_id || vars.VITE_ADO_SSO_CLIENT_ID }}
+          VITE_ADO_SSO_TENANT_ID: ${{ inputs.sso_tenant_id || vars.VITE_ADO_SSO_TENANT_ID || 'organizations' }}

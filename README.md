@@ -110,16 +110,11 @@ This project includes pre-configured Azure Static Web Apps files:
 - [`swa-cli.config.json`](swa-cli.config.json) — Configuration for the Azure Static Web Apps CLI.
 
 ### Option A: Manual GitHub Actions Deployment ([`.github/workflows/azure-static-web-apps.yml`](.github/workflows/azure-static-web-apps.yml))
-1. In the [Azure Portal — Create Static Web App](https://portal.azure.com/#create/Microsoft.StaticApp), create your Static Web App with **Deployment details → Other** (so Azure doesn't overwrite your workflow with an auto-push trigger).
+1. In the [Azure Portal — Create Static Web App](https://portal.azure.com/#create/Microsoft.StaticApp), create your Static Web App with **Deployment details → Other**.
 2. Once created, open your Static Web App in the Azure Portal → click **Manage deployment token** in the top bar → copy the token.
-3. In your GitHub repository, go to **Settings** → **Secrets and variables** → **Actions**:
-   - Under the **Secrets** tab, click **New repository secret**:
-     - Name: `AZURE_STATIC_WEB_APPS_API_TOKEN`
-     - Value: paste your deployment token.
-   - Under the **Variables** tab *(optional, for Microsoft Entra ID SSO)*, click **New repository variable**:
-     - `VITE_ADO_SSO_CLIENT_ID`: your Entra ID Application (client) ID.
-     - `VITE_ADO_SSO_TENANT_ID`: your Entra ID Directory (tenant) ID (or `organizations`).
-4. Whenever you want to deploy, go to your GitHub repo's **Actions** tab → select **Deploy to Azure Static Web Apps** → click **Run workflow**.
+3. Go to the **Actions** tab in GitHub → select **Deploy to Azure Static Web Apps** → click **Run workflow**:
+   - **Enter credentials directly in the Run Workflow dialog**: Paste your **Deployment Token** (`deployment_token`), and optionally your Entra ID **Client ID** (`sso_client_id`) and **Tenant ID** (`sso_tenant_id`), then click **Run workflow**.
+   - **Or use Repository Secrets**: You can also save `AZURE_STATIC_WEB_APPS_API_TOKEN` under **Settings → Secrets and variables → Actions → Secrets** (and `VITE_ADO_SSO_CLIENT_ID` / `VITE_ADO_SSO_TENANT_ID` under **Variables**) and leave the prompt fields blank when clicking **Run workflow**.
 
 ### Option B: Deploy Directly from Your Terminal (SWA CLI)
 You can also deploy straight from your machine without GitHub Actions:
