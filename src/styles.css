@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: #f4f3ef;
+  color: #191917;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: #191917;
+}
+
+a:hover {
+  color: #6e6c64;
+}
+
+.hover-bg-f4f3ef:hover {
+  background: #f4f3ef !important;
+}
+
+.hover-bg-f0eee8:hover {
+  background: #f0eee8 !important;
+}
+
+.hover-bg-fbfaf7:hover {
+  background: #fbfaf7 !important;
+}
+
+.hover-bg-ebe9e2:hover {
+  background: #ebe9e2 !important;
+}
+
+.hover-disconnect:hover {
+  color: #191917 !important;
+  background: #ebe9e2 !important;
+}
